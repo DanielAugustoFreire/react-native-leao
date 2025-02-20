@@ -1,9 +1,7 @@
-import React, { Component, useRef } from 'react';
-import { 
-  Button, Image, ImageBackground, StyleSheet, Text, TextInput, View,
-  Dimensions
- } from 'react-native';
- import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import React, { Component } from 'react';
+import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, View, Dimensions } from 'react-native';
+import { Table, Row, Rows} from 'react-native-table-component';
+
 
 const imagemLeao = require('./assets/leao.png');
 const receita = require('./assets/receitabeta.png');
@@ -18,6 +16,7 @@ export default class Sorte extends Component{
         this.state = { salario: 0 };
         this.inputSalario = React.createRef();
         this.state = {
+          isPortrait: true,
           tableHead: ['Renda Bruta', 'Alíquota', 'Parcela a Deduzir'],
           tableData: [
             ['0,00 - 1400,00', '0%', '0,00'],
@@ -30,18 +29,27 @@ export default class Sorte extends Component{
         
     }
 
-
     calcularImposto(){
       const regex = /^[0-9]*\.?[0-9]*$/; 
       var ValorSalario = this.inputSalario.current.value;
 
       if (!regex.test(ValorSalario)) {
-        this.setState({ salario: '' });
+        this.setState({ salario: 'Apenas Numeros!!!' });
       } else {
-        this.setState({ salario: ValorSalario });
+        let saida = 0;
+        if(ValorSalario >= 3600.01){
+          saida = (ValorSalario * 0.3) + 700;
+        }else if (ValorSalario < 3600 && ValorSalario >= 2800.01){
+          saida = (ValorSalario * 0.25) + 500;
+        }else if(ValorSalario < 2800 && ValorSalario >= 2100.01){
+          saida = (ValorSalario * 0.15) + 270;
+        }else if(ValorSalario < 2100 && ValorSalario >= 1400.01){
+          saida = (ValorSalario * 0.10) + 100;
+        }
+
+        this.setState({ salario: saida });
       }
     }
-  
 
     render(){
       return (
@@ -52,18 +60,24 @@ export default class Sorte extends Component{
               style={styles.image_header}
               resizeMode='contain'
             />
-          </View> 
+          </View>
     
           <View>
-            <Text style={styles.text}>Informe o Valor do Salario BRUTO {this.state.salario}</Text>
-            <TextInput style={styles.input} ref={this.inputSalario}></TextInput>
-            <Button style={styles.botao} title='Calcular' onPress={() => this.calcularImposto()}></Button>
-          </View>
 
-          <Table style={styles.table_style} borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-            <Row data={this.state.tableHead} style={styles.head} />
-            <Rows data={this.state.tableData} style={styles.texty}/>
-          </Table>
+            <Table style={styles.table_style} borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+              <Row data={this.state.tableHead} style={styles.head} textStyle={styles.texty}/>
+              <Rows data={this.state.tableData} textStyle={styles.texty}/>
+            </Table>
+
+            <View style={{ top: "5%" }}>
+              <Text style={styles.text}>Informe o Valor do Salario BRUTO</Text>
+              <TextInput style={styles.input} ref={this.inputSalario}></TextInput>
+              <Button style={styles.botao} title='Calcular' onPress={() => this.calcularImposto()}></Button>
+            </View>
+
+          </View>
+          <Text style={styles.text}>{this.state.salario}</Text>
+
     
           <ImageBackground 
             source={imagemLeao}
