@@ -1,8 +1,15 @@
 import React, { Component, useRef } from 'react';
-import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native';
+import { 
+  Button, Image, ImageBackground, StyleSheet, Text, TextInput, View,
+  Dimensions
+ } from 'react-native';
+ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 const imagemLeao = require('./assets/leao.png');
 const receita = require('./assets/receitabeta.png');
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 export default class Sorte extends Component{
     
@@ -10,6 +17,17 @@ export default class Sorte extends Component{
         super(props);
         this.state = { salario: 0 };
         this.inputSalario = React.createRef();
+        this.state = {
+          tableHead: ['Renda Bruta', 'Alíquota', 'Parcela a Deduzir'],
+          tableData: [
+            ['0,00 - 1400,00', '0%', '0,00'],
+            ['1400,01 - 2100,00', '10%', '100,00'],
+            ['2100,01 - 2800,00', '15%', '270,00'],
+            ['2800,01 - 3600,00', '25%', '500,00'],
+            ['3600,01 ou mais', '30%', '700,00']
+          ]
+        };
+        
     }
 
 
@@ -32,6 +50,7 @@ export default class Sorte extends Component{
             <Image 
               source={receita}
               style={styles.image_header}
+              resizeMode='contain'
             />
           </View> 
     
@@ -40,10 +59,16 @@ export default class Sorte extends Component{
             <TextInput style={styles.input} ref={this.inputSalario}></TextInput>
             <Button style={styles.botao} title='Calcular' onPress={() => this.calcularImposto()}></Button>
           </View>
+
+          <Table style={styles.table_style} borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+            <Row data={this.state.tableHead} style={styles.head} />
+            <Rows data={this.state.tableData} style={styles.texty}/>
+          </Table>
     
           <ImageBackground 
             source={imagemLeao}
             style={styles.image}
+            resizeMode='contain'
           >
           </ImageBackground>
         </View>
@@ -77,18 +102,28 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    height: 500,
-    width: "100%",
+    height: windowHeight * 0.5,
+    width: windowWidth * 0.9,
     opacity: 0.5,
   },
   image_header: {
-    height: 100, // Definir um tamanho fixo para a imagem do cabeçalho
-    width: 200,
-    resizeMode: 'contain',
+    height: windowHeight * 0.09,
+    width: windowWidth * 1,
   },
   text: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10, // Adicionado para criar espaçamento entre a imagem e o texto
+    marginTop: 10,
+  },
+  head: { 
+    height: windowHeight * 0.05, 
+    backgroundColor: '#f1f8ff',
+    width: windowWidth * 0.8,
+  },
+  texty: {
+    fontSize: 10,
+  },
+  table_style: {
+    top: '10px'
   },
 });
