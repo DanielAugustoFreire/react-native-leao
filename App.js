@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, View } from 'react-native';
 
 const imagemLeao = require('./assets/leao.png');
@@ -9,10 +9,19 @@ export default class Sorte extends Component{
     constructor(props){
         super(props);
         this.state = { salario: 0 };
+        this.inputSalario = React.createRef();
     }
 
+
     calcularImposto(){
-      
+      const regex = /^[0-9]*\.?[0-9]*$/; 
+      var ValorSalario = this.inputSalario.current.value;
+
+      if (!regex.test(ValorSalario)) {
+        this.setState({ salario: '' });
+      } else {
+        this.setState({ salario: ValorSalario });
+      }
     }
   
 
@@ -28,7 +37,7 @@ export default class Sorte extends Component{
     
           <View>
             <Text style={styles.text}>Informe o Valor do Salario BRUTO {this.state.salario}</Text>
-            <TextInput style={styles.input}></TextInput>
+            <TextInput style={styles.input} ref={this.inputSalario}></TextInput>
             <Button style={styles.botao} title='Calcular' onPress={() => this.calcularImposto()}></Button>
           </View>
     
@@ -69,7 +78,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     height: 500,
-    width: 500,
+    width: "100%",
     opacity: 0.5,
   },
   image_header: {
