@@ -13,7 +13,7 @@ export default class Sorte extends Component{
     
     constructor(props){
         super(props);
-        this.state = { salario: 0 };
+        this.state = { saida: 0 };
         this.inputSalario = React.createRef();
         this.state = {
           isPortrait: true,
@@ -36,6 +36,10 @@ export default class Sorte extends Component{
       if (!regex.test(ValorSalario)) {
         this.setState({ salario: 'Apenas Numeros!!!' });
       } else {
+        if(ValorSalario.length == 0 || ValorSalario.length > 10){  
+          this.setState({ salario: 'Fomato Não Aceito ' })
+          return;
+        }
         let saida = 0;
         if(ValorSalario >= 3600.01){
           saida = (ValorSalario * 0.3) + 700;
@@ -47,7 +51,7 @@ export default class Sorte extends Component{
           saida = (ValorSalario * 0.10) + 100;
         }
 
-        this.setState({ salario: saida });
+        this.setState({ salario: `Valor a pagar: ${saida}` });
       }
     }
 
@@ -76,9 +80,7 @@ export default class Sorte extends Component{
             </View>
 
           </View>
-          <Text style={styles.text}>{this.state.salario}</Text>
-
-    
+          <Text style={styles.text_resultado}>{this.state.salario}</Text>
           <ImageBackground 
             source={imagemLeao}
             style={styles.image}
@@ -126,6 +128,11 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  text_resultado:{
+    fontSize: 30,
     fontWeight: 'bold',
     marginTop: 10,
   },
